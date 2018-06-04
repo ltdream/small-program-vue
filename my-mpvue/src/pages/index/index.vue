@@ -1,46 +1,52 @@
 <template>
-  <div class="container" @click="clickHandle('test click', $event)">
-
-    <div class="userinfo" @click="bindViewTap">
-      <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl" background-size="cover" />
-      <div class="userinfo-nickname">
-        <card :text="userInfo.nickName"></card>
-      </div>
+  <div class="container">
+    <swiper indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval" :duration="duration">
+      <swiper-item v-for="item in imgUrls" :key="item">
+        <image :src="item" class="slide-image" width="355" height="150"/>
+      </swiper-item>
+    </swiper>
+    <div class="label"></div>
+    <div class="list">
+      <mptoast/>
     </div>
-
-    <div class="usermotto">
-      <div class="user-motto">
-        <card :text="motto"></card>
-      </div>
-    </div>
-
-    <form class="form-container">
-      <input type="text" class="form-control" v-model="motto" placeholder="v-model" />
-      <input type="text" class="form-control" v-model.lazy="motto" placeholder="v-model.lazy" />
-    </form>
-    <a href="/pages/counter/main" class="counter">去往Vuex示例页面</a>
   </div>
 </template>
 
 <script>
 import card from '@/components/card'
+import mptoast from 'mptoast'
+// import { post } from 'src/utils/requestMethods.js'
 
 export default {
   data () {
     return {
-      motto: 'Hello World',
-      userInfo: {}
+      userInfo: {},
+      indicatorDots: false,
+      autoplay: false,
+      interval: 3000,
+      duration: 3000,
+      imgUrls: [
+        'http://dummyimage.com/200x100/00405d/f00&text=Mock.js',
+        'http://dummyimage.com/200x100/00405d/F0F&text=Mock.js',
+        'http://dummyimage.com/200x100/00405d/FF0&text=Mock.js'
+      ]
     }
   },
 
   components: {
-    card
+    card, mptoast
+  },
+
+  mounted () {
+    this.showToast()
   },
 
   methods: {
-    bindViewTap () {
-      const url = '../logs/main'
-      wx.navigateTo({ url })
+    getList () {
+      // let res = await post ('goods/list', {name: 'liuting'})
+    },
+    showToast () {
+      this.$mptoast('我是提示信息')
     },
     getUserInfo () {
       // 调用登录接口
@@ -53,12 +59,8 @@ export default {
           })
         }
       })
-    },
-    clickHandle (msg, ev) {
-      console.log('clickHandle:', msg, ev)
     }
   },
-
   created () {
     // 调用应用实例的方法获取全局数据
     this.getUserInfo()
@@ -67,39 +69,5 @@ export default {
 </script>
 
 <style scoped>
-.userinfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
-.userinfo-avatar {
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
-}
-
-.userinfo-nickname {
-  color: #aaa;
-}
-
-.usermotto {
-  margin-top: 150px;
-}
-
-.form-control {
-  display: block;
-  padding: 0 12px;
-  margin-bottom: 5px;
-  border: 1px solid #ccc;
-}
-
-.counter {
-  display: inline-block;
-  margin: 10px auto;
-  padding: 5px 10px;
-  color: blue;
-  border: 1px solid blue;
-}
 </style>
